@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FicheCard from '../../components/FicheCard.astro';
+import FicheFilters from '../../components/FicheFilters.vue';
+import { publishedFiches, sortByUpdatedDesc, toSearchDocument } from '../../lib/fiches';
+import { technologyLabel } from '../../data/technologies';
+
+/**
+ * Une page par technologie qui a au moins une fiche publiée.
+ * Une technologie sans fiche n'a pas d'adresse.
+ */
+export async function getStaticPaths() {
+  const published = publishedFiches(await getCollection('fiches'));
+  const slugs = [...new Set(published.map((entry) => entry.data.technology))];
+  return slugs.map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const published = sortByUpdatedDesc(
+  publishedFiches(await getCollection('fiches')).filter((entry) => entry.data.technology === slug),
+);
+const cards = published.map((entry) => toSearchDocument(entry, import.meta.env.BASE_URL));
+const label = technologyLabel(slug ?? '');
+---
+<Base title={`${label} — DevFiches`} description={`Fiches publiées pour ${label}.`}>
+  <h1>{label}</h1>
+  <FicheFilters
+    client:load
+    listId="technologie"
+    emptyId="technologie-vide"
+    showTechnology={false}
+    technologies={[]}
+  />
+  <p id="technologie-vide" class="empty" hidden>Aucune fiche ne correspond à ces filtres.</p>
+  <ul id="technologie" class="card-grid">
+    {cards.map((card) => (
+      <FicheCard
+        title={card.title}
+        description={card.description}
+        technology={card.technology}
+        technologyLabel={card.technologyLabel}
+        difficulty={card.difficulty}
+        difficultyLabel={card.difficultyLabel}
+        minutes={card.minutes}
+        href={card.href}
+        image={card.image}
+        imageAlt={card.imageAlt}
+      />
+    ))}
+  </ul>
+</Base>

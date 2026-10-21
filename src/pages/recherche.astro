@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import SearchResults from '../components/SearchResults.vue';
+import { technologies } from '../data/technologies';
+---
+<Base title="Recherche — DevFiches" description="Rechercher une notion dans les fiches publiées.">
+  <h1>Recherche</h1>
+  <SearchResults client:load technologies={[...technologies]} />
+</Base>

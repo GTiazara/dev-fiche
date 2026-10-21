@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import QuizPanel from '../../../components/QuizPanel.vue';
+import { publishedFiches } from '../../../lib/fiches';
+import { withBase } from '../../../lib/paths';
+
+/**
+ * Une page de quiz par fiche publiée qui en possède un.
+ * Le nombre de questions est celui du fichier, entre 3 et 5.
+ */
+export async function getStaticPaths() {
+  const published = publishedFiches(await getCollection('fiches')).filter((entry) => entry.data.quiz);
+  return published.map((entry) => ({ params: { slug: entry.id } }));
+}
+
+const { slug } = Astro.params;
+const entry = publishedFiches(await getCollection('fiches')).find((item) => item.id === slug);
+if (!entry?.data.quiz) {
+  throw new Error(`Quiz introuvable : ${slug}`);
+}
+const base = import.meta.env.BASE_URL;
+---
+<Base title={`Quiz — ${entry.data.title}`} description={`Quiz de la fiche ${entry.data.title}.`}>
+  <p><a href={withBase(`/fiches/${entry.id}`, base)}>Retour à la fiche</a></p>
+  <h1>Quiz : {entry.data.title}</h1>
+  <QuizPanel client:load questions={entry.data.quiz} />
+</Base>

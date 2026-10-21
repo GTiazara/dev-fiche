@@ -1,0 +1,91 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CopyCode from '../../components/CopyCode.vue';
+import { publishedFiches, sortByUpdatedDesc, toSearchDocument } from '../../lib/fiches';
+import { withBase } from '../../lib/paths';
+
+/**
+ * Pages des fiches publiées seulement.
+ * Un brouillon n'a pas d'adresse : la page introuvable répond à sa place.
+ */
+export async function getStaticPaths() {
+  const published = publishedFiches(await getCollection('fiches'));
+  return published.map((entry) => ({ params: { slug: entry.id } }));
+}
+
+const { slug } = Astro.params;
+const ordered = sortByUpdatedDesc(publishedFiches(await getCollection('fiches')));
+const position = ordered.findIndex((item) => item.id === slug);
+const entry = ordered[position];
+if (!entry) {
+  throw new Error(`Fiche publiée introuvable : ${slug}`);
+}
+// Dans l'ordre des mises à jour : la voisine plus récente est avant, la plus ancienne après.
+const newer = ordered[position - 1];
+const older = ordered[position + 1];
+const card = toSearchDocument(entry, import.meta.env.BASE_URL);
+const { Content, headings } = await render(entry);
+const base = import.meta.env.BASE_URL;
+// UTC pour que la date affichée soit celle du front-matter, quel que soit le fuseau du build.
+const updated = entry.data.updatedAt.toLocaleDateString('fr-FR', { dateStyle: 'long', timeZone: 'UTC' });
+---
+<Base title={`${card.title} — DevFiches`} description={card.description}>
+  <div class="read-progress" aria-hidden="true"></div>
+  <article>
+    <a class="back-link" href={withBase('/fiches', base)}>← Toutes les fiches</a>
+    <header class="fiche-head">
+      <p class="fiche-kicker">
+        <a href={withBase(`/technologies/${entry.data.technology}`, base)}>{card.technologyLabel}</a>
+        <span class="badge neutral">{card.difficultyLabel}</span>
+      </p>
+      <h1>{card.title}</h1>
+      <p class="fiche-lead">{card.description}</p>
+      <p class="meta">
+        Mis à jour le <time datetime={entry.data.updatedAt.toISOString().slice(0, 10)}>{updated}</time>
+        · {card.minutes} min de lecture
+      </p>
+      {card.tags.length > 0 && (
+        <p class="badges">
+          {card.tags.map((tag) => <span class="badge">{tag}</span>)}
+        </p>
+      )}
+      {card.image && <img class="fiche-cover" src={card.image} alt={card.imageAlt} />}
+    </header>
+    <div class="fiche-layout">
+      {headings.length > 0 && (
+        <nav class="toc" aria-label="Sommaire">
+          <p class="toc-title">Sommaire</p>
+          <ol>
+            {headings.map((heading) => (
+              <li><a href={`#${heading.slug}`}>{heading.text}</a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <div class="reading">
+        <Content />
+        <CopyCode client:load />
+      </div>
+    </div>
+    {entry.data.quiz && (
+      <p class="fiche-actions"><a class="quiz-link" href={withBase(`/fiches/${entry.id}/quiz`, base)}>Lancer le quiz</a></p>
+    )}
+    {(newer || older) && (
+      <nav class="fiche-pager" aria-label="Autres fiches">
+        {newer ? (
+          <a href={withBase(`/fiches/${newer.id}`, base)}>
+            <span class="meta">← Fiche plus récente</span>
+            <strong>{newer.data.title}</strong>
+          </a>
+        ) : <span />}
+        {older ? (
+          <a class="next" href={withBase(`/fiches/${older.id}`, base)}>
+            <span class="meta">Fiche plus ancienne →</span>
+            <strong>{older.data.title}</strong>
+          </a>
+        ) : <span />}
+      </nav>
+    )}
+  </article>
+</Base>

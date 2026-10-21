@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import MobileNav from '../components/MobileNav.vue';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <a class="skip" href="#contenu">Aller au contenu</a>
+    <header class="site-header">
+      <a class="brand" href={withBase('/', base)}>
+        <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+        <span>Dev<span class="brand-accent">Fiches</span></span>
+      </a>
+      <nav class="nav-desktop" aria-label="Principal">
+        <a href={withBase('/', base)}>Accueil</a>
+        <a href={withBase('/fiches', base)}>Fiches</a>
+        <a href={withBase('/technologies', base)}>Technologies</a>
+        <a href={withBase('/a-propos', base)}>À propos</a>
+      </nav>
+      <form class="search-form" action={withBase('/recherche', base)} method="get">
+        <label class="sr-only" for="recherche-entete">Rechercher une fiche</label>
+        <input id="recherche-entete" type="search" name="q" placeholder="Rechercher une fiche" />
+      </form>
+      <MobileNav client:load />
+    </header>
+    <main id="contenu" class="wrap">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <span>DevFiches — Comprendre. Réviser. Coder.</span>
+      <nav aria-label="Pied de page">
+        <a href={withBase('/fiches', base)}>Fiches</a>
+        <a href={withBase('/technologies', base)}>Technologies</a>
+        <a href={withBase('/a-propos', base)}>À propos</a>
+      </nav>
+    </footer>
+  </body>
+</html>

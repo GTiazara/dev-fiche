@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/paths';
+---
+<Base title="Page introuvable — DevFiches" description="Cette adresse ne correspond à aucune page.">
+  <h1>Cette page est introuvable.</h1>
+  <p>L'adresse demandée ne correspond à aucune page publiée.</p>
+  <p><a href={withBase('/fiches', import.meta.env.BASE_URL)}>Retour au catalogue</a></p>
+</Base>

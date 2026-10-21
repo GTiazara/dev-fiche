@@ -1,0 +1,129 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import {
+  distinctCount,
+  publishedCount,
+  publishedFiches,
+  sortByUpdatedDesc,
+  toSearchDocument,
+} from '../lib/fiches';
+import { technologies, technologyIcon } from '../data/technologies';
+import { withBase } from '../lib/paths';
+
+const all = await getCollection('fiches');
+const published = sortByUpdatedDesc(publishedFiches(all));
+const cards = published.map((entry) => toSearchDocument(entry, import.meta.env.BASE_URL));
+const ficheCount = publishedCount(all);
+const technologyCount = distinctCount(published, (entry) => entry.data.technology);
+const levelCount = distinctCount(published, (entry) => entry.data.difficulty);
+const base = import.meta.env.BASE_URL;
+const visibleTechnologies = technologies.filter((item) =>
+  published.some((entry) => entry.data.technology === item.slug),
+);
+
+/** Nombre de fiches publiées pour une technologie. */
+function countByTechnology(slug: string): number {
+  return published.filter((entry) => entry.data.technology === slug).length;
+}
+---
+<Base
+  title="DevFiches"
+  description="Des fiches de révision pour apprendre et réviser le développement informatique."
+>
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-tag">Le développement informatique, résumé en fiches.</p>
+      <h1>Apprends, révise, <em>progresse.</em></h1>
+      <p class="lead">
+        Des fiches courtes pour comprendre une notion, lire un exemple, puis se tester.
+      </p>
+      <form class="hero-search" action={withBase('/recherche', base)} method="get">
+        <label class="sr-only" for="recherche-accueil">Rechercher une notion</label>
+        <input id="recherche-accueil" type="search" name="q" placeholder="Rechercher une technologie, une notion…" />
+        <button type="submit" class="button">Rechercher</button>
+      </form>
+      <ul class="chips" aria-label="Technologies">
+        {visibleTechnologies.map((item) => (
+          <li><a href={withBase(`/technologies/${item.slug}`, base)}>{item.label}</a></li>
+        ))}
+      </ul>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="code-window">
+        <span class="code-dots"><i></i><i></i><i></i></span>
+        <pre>{'const fiche = {\n  notion: "variable",\n  exemple: true,\n  quiz: 3,\n};'}</pre>
+      </div>
+      <span class="float-chip chip-a">JS</span>
+      <span class="float-chip chip-b">Py</span>
+      <span class="float-chip chip-c">Git</span>
+    </div>
+  </section>
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Parcourir par catégorie</h2>
+        <p class="meta">Choisis une technologie pour accéder à toutes les fiches associées.</p>
+      </div>
+      <a href={withBase('/technologies', base)}>Voir toutes les catégories</a>
+    </div>
+    <ul class="category-grid">
+      {visibleTechnologies.map((item) => (
+        <li class="card category-card">
+          <span class="tech-icon" aria-hidden="true">
+            {technologyIcon(item.slug) ? <img src={withBase(technologyIcon(item.slug)!, base)} alt="" /> : item.label.slice(0, 2)}
+          </span>
+          <h3><a href={withBase(`/technologies/${item.slug}`, base)}>{item.label}</a></h3>
+          <p class="meta">{countByTechnology(item.slug)} fiches</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <div class="home-split">
+    <section>
+      <div class="section-head">
+        <h2>Dernières fiches publiées</h2>
+        <a href={withBase('/fiches', base)}>Voir toutes les fiches</a>
+      </div>
+      <ol class="post-list">
+        {cards.slice(0, 6).map((card, index) => (
+          <li class="post">
+            <time class="post-date" datetime={published[index]!.data.updatedAt.toISOString().slice(0, 10)}>
+              {published[index]!.data.updatedAt.toISOString().slice(0, 10)}
+            </time>
+            <div class="post-body">
+              <p class="post-kicker">
+                <span class="badge">{card.technologyLabel}</span>
+                <span class="badge neutral">{card.difficultyLabel}</span>
+                <span class="meta">{card.minutes} min</span>
+              </p>
+              <h3><a href={card.href}>{card.title}</a></h3>
+              <p>{card.description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+    <aside class="home-side">
+      <section class="side-box">
+        <h2>Pourquoi DevFiches ?</h2>
+        <ul class="check-list">
+          <li>Des fiches courtes et efficaces</li>
+          <li>Des exemples de code concrets</li>
+          <li>Des quiz pour tester tes connaissances</li>
+          <li>Sans compte, sur tous les appareils</li>
+        </ul>
+      </section>
+      <section class="cta">
+        <h2>Prêt à passer au niveau supérieur ?</h2>
+        <p>Explore les fiches et commence ton parcours de révision.</p>
+        <a class="button" href={withBase('/fiches', base)}>Voir toutes les fiches</a>
+      </section>
+    </aside>
+  </div>
+  <p class="counters">
+    <span><strong>{ficheCount}</strong> fiches</span>
+    <span><strong>{technologyCount}</strong> technologies</span>
+    <span><strong>{levelCount}</strong> niveaux</span>
+  </p>
+</Base>

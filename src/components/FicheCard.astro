@@ -1,0 +1,29 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  technology: string;
+  technologyLabel: string;
+  difficulty: string;
+  difficultyLabel: string;
+  minutes: number;
+  href: string;
+  image?: string;
+  imageAlt?: string;
+}
+const props = Astro.props;
+---
+<li
+  class="card"
+  data-technology={props.technology}
+  data-difficulty={props.difficulty}
+>
+  {props.image && <img class="card-image" src={props.image} alt={props.imageAlt ?? ''} loading="lazy" />}
+  <span class="badges">
+    <span class="badge">{props.technologyLabel}</span>
+    <span class="badge neutral">{props.difficultyLabel}</span>
+  </span>
+  <h2><a href={props.href}>{props.title}</a></h2>
+  <p>{props.description}</p>
+  <p class="meta">{props.minutes} min</p>
+</li>
