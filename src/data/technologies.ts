@@ -17,12 +17,17 @@ export const technologies = [
     label: 'Réseau',
     icon: '/images/technologies/reseau.svg',
   },
+  {
+    slug: 'cloud',
+    label: 'Cloud',
+    icon: '/images/technologies/cloud.svg',
+  },
 ] as const;
 
 /** Icône facultative d'une technologie, ou undefined. */
 export function technologyIcon(slug: string): string | undefined {
-  const found: { icon?: string } | undefined = technologies.find((item) => item.slug === slug);
-  return found?.icon;
+  const found = technologies.find((item) => item.slug === slug);
+  return found && 'icon' in found ? found.icon : undefined;
 }
 
 export const technologySlugs = technologies.map((item) => item.slug) as [
