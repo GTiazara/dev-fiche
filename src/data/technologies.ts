@@ -12,6 +12,11 @@ export const technologies = [
     label: 'Transfert de fichiers',
     icon: '/images/technologies/transfert-fichiers.svg',
   },
+  {
+    slug: 'reseau',
+    label: 'Réseau',
+    icon: '/images/technologies/reseau.svg',
+  },
 ] as const;
 
 /** Icône facultative d'une technologie, ou undefined. */
