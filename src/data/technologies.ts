@@ -7,6 +7,11 @@ export const technologies = [
   { slug: 'python', label: 'Python' },
   { slug: 'git', label: 'Git' },
   { slug: 'ia_agent', label: 'IA Agent', icon: '/images/technologies/ia-agent.svg' },
+  {
+    slug: 'transfert_fichiers',
+    label: 'Transfert de fichiers',
+    icon: '/images/technologies/transfert-fichiers.svg',
+  },
 ] as const;
 
 /** Icône facultative d'une technologie, ou undefined. */

@@ -39,6 +39,22 @@ const displayedMonth = date.getMonth() + 1;
 - Une exigence décrit ce que le visiteur voit et les fichiers que le mainteneur dépose. Elle ne dépend d'aucun éditeur, IDE ou assistant.
 - La langue de l'interface est celle écrite dans le projet.
 
+## Contexte de DevFiches
+
+DevFiches est un site statique de fiches de révision sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pédagogique durable consacrée à une notion, pas un article d'actualité.
+
+Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fiches/`. Les spécifications produit et technique du dépôt font foi pour le contenu, les champs et les contraintes de publication.
+
+## Règles de rédaction des fiches
+
+- Écrire en français, avec un niveau adapté à la difficulté indiquée dans les métadonnées.
+- Traiter une notion ou un objectif précis. Aller directement à l'essentiel et éviter les répétitions, les généralités et les sections qui n'apportent rien.
+- Expliquer les termes nécessaires, puis montrer l'idée avec un exemple juste et pertinent lorsque cela aide à comprendre.
+- Organiser le texte pour faciliter la révision : définition, mots-clés et exemple de code selon le sujet. Chaque fiche doit comporter une section « À retenir » qui résume les points essentiels.
+- Baliser chaque bloc de code avec son langage et ne pas présenter un exemple comme exécutable s'il est incomplet.
+- Le quiz est facultatif. S'il est présent, respecter le schéma technique : 3 à 5 questions, une seule bonne réponse par question et une explication courte.
+- Vérifier le frontmatter et lancer le build après toute modification d'une fiche; un contenu invalide fait échouer la publication.
+
 ## Qualité de base
 
 - HTML sémantique, navigation utilisable au clavier, un titre par page.

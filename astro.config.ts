@@ -5,9 +5,10 @@ import { unified } from '@astrojs/markdown-remark';
 import { remarkRetenir } from './src/lib/remark-retenir';
 
 /**
- * Seul endroit pour l'adresse GitHub Pages.
- * En local, `site` reste vide et `base` vaut `/`. Le workflow de publication fournit
- * SITE_URL (https://<utilisateur>.github.io) et SITE_BASE (/<depot>/) pour un site de projet.
+ * Configuration principale Astro.
+ * En local, `site` reste vide et `base` vaut `/`.
+ * En CI, le workflow GitHub Actions résout dynamiquement l'URL et le chemin de base
+ * (domaine personnalisé ou sous-dossier de dépôt) via `actions/configure-pages`.
  */
 export default defineConfig({
   output: 'static',
