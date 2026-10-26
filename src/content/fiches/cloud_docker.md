@@ -69,6 +69,9 @@ docker run -d -p 8080:80 --name mon-serveur nginx:alpine
 # Lister les conteneurs en cours d'exécution
 docker ps
 
+# Retourner tous les conteneurs qui contiennent le mot foo dans leur nom 
+docker ps -f name=foo
+
 # Lister TOUS les conteneurs (y compris ceux arrêtés)
 docker ps -a
 
