@@ -5,6 +5,9 @@
 export const technologies = [
   { slug: 'javascript', label: 'JavaScript' },
   { slug: 'python', label: 'Python' },
+  { slug: 'linux', label: 'Linux' },
+  { slug: 'devops', label: 'DevOps' },
+  { slug: 'backend', label: 'Backend' },
   { slug: 'git', label: 'Git' },
   { slug: 'ia_agent', label: 'IA Agent', icon: '/images/technologies/ia-agent.svg' },
   {
