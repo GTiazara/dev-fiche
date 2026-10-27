@@ -1,7 +1,7 @@
 ---
 title: Automatiser les workflows Git avec les Git Hooks
 description: Comprendre et maîtriser les Git Hooks pour automatiser les vérifications, les tests, le formatage du code et les contrôles qualité lors des opérations Git.
-technology: devops
+technology: git
 difficulty: debutant
 tags: [git, git-hooks, pre-commit, pre-push, commit-msg, automatisation, devops, qualite-code, fullstack]
 publishedAt: 2026-10-26

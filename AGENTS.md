@@ -1,6 +1,12 @@
-# Règles pour les agents — sites web statiques
 
-Ces règles valent pour tout projet de site web statique. Les choix propres à un dépôt (pages, contenu, framework, hébergement) sont dans ses spécifications, lorsqu'il en a.
+## Contexte de DevFiches
+
+DevFiches est un site statique de fiches sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pédagogique durable consacrée à une notion, pas un article d'actualité.
+
+Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fiches/`. Les spécifications produit et technique du dépôt font foi pour le contenu, les champs et les contraintes de publication.
+
+## Qualité de code modification: 
+Après chaque modification/chagement de code ou content, éxécute `npm run build` pour vérifier s'il n'y a pas bug
 
 ## Commenter le code
 
@@ -39,12 +45,6 @@ const displayedMonth = date.getMonth() + 1;
 - Une exigence décrit ce que le visiteur voit et les fichiers que le mainteneur dépose. Elle ne dépend d'aucun éditeur, IDE ou assistant.
 - La langue de l'interface est celle écrite dans le projet.
 
-## Contexte de DevFiches
-
-DevFiches est un site statique de fiches de révision sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pédagogique durable consacrée à une notion, pas un article d'actualité.
-
-Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fiches/`. Les spécifications produit et technique du dépôt font foi pour le contenu, les champs et les contraintes de publication.
-
 ## Règles de rédaction des fiches
 
 - Écrire en français, avec un niveau adapté à la difficulté indiquée dans les métadonnées.
@@ -58,5 +58,6 @@ Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fi
 ## Qualité de base
 
 - HTML sémantique, navigation utilisable au clavier, un titre par page.
-- Le site reste utilisable sur un petit écran.
+- Le site reste utilisable sur un petit écran (site mobile first - mobile ready)
 - Le contraste du texte reste lisible.
+
