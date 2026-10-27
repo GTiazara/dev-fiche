@@ -1,11 +1,11 @@
 
 ## Contexte de DevFiches
 
-DevFiches est un site statique de fiches sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pédagogique durable consacrée à une notion, pas un article d'actualité.
+DevFiches est un site statique de fiches d'apprentissage et d'aide-mémoire sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pratique consacrée à une notion : la comprendre, puis retrouver la commande ou l'exemple. Ce n'est pas un article d'actualité.
 
 Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fiches/`. Les spécifications produit et technique du dépôt font foi pour le contenu, les champs et les contraintes de publication.
 
-## Qualité de code modification: 
+## Qualité de code après modification: 
 Après chaque modification/chagement de code ou content, éxécute `npm run build` pour vérifier s'il n'y a pas bug
 
 ## Commenter le code
@@ -44,13 +44,15 @@ const displayedMonth = date.getMonth() + 1;
 - Les spécifications du dépôt font foi pour le périmètre, les pages et les données.
 - Une exigence décrit ce que le visiteur voit et les fichiers que le mainteneur dépose. Elle ne dépend d'aucun éditeur, IDE ou assistant.
 - La langue de l'interface est celle écrite dans le projet.
+- OpenSpec décrit les fonctionnalités : une page, un parcours, un champ qui change le comportement, une interaction. Une nouvelle fiche, un nouveau texte ou une technologie ajoutée à la liste du projet ne s'y reportent pas.
+- Avant de modifier le code pour une fonctionnalité, une interaction ou un parcours, lancer `/openspec-propose` pour spécifier le changement, puis `/openspec-apply-change` pour l'appliquer. Une fiche, un texte ou une technologie ne passent pas par ces commandes.
 
 ## Règles de rédaction des fiches
 
 - Écrire en français, avec un niveau adapté à la difficulté indiquée dans les métadonnées.
 - Traiter une notion ou un objectif précis. Aller directement à l'essentiel et éviter les répétitions, les généralités et les sections qui n'apportent rien.
 - Expliquer les termes nécessaires, puis montrer l'idée avec un exemple juste et pertinent lorsque cela aide à comprendre.
-- Organiser le texte pour faciliter la révision : définition, mots-clés et exemple de code selon le sujet. Chaque fiche doit comporter une section « À retenir » qui résume les points essentiels.
+- Organiser le texte pour apprendre puis retrouver l'essentiel : définition, mots-clés et exemple de code selon le sujet. Chaque fiche doit comporter une section « À retenir » qui résume les points essentiels.
 - Baliser chaque bloc de code avec son langage et ne pas présenter un exemple comme exécutable s'il est incomplet.
 - Le quiz est facultatif. S'il est présent, respecter le schéma technique : 3 à 5 questions, une seule bonne réponse par question et une explication courte.
 - Vérifier le frontmatter et lancer le build après toute modification d'une fiche; un contenu invalide fait échouer la publication.

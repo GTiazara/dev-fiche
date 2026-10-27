@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Permet au visiteur de lire une fiche de révision publiée, avec ses exemples de code, et d'en ouvrir le quiz lorsqu'il existe.
+Permet au visiteur de lire une fiche publiée, avec ses exemples de code, et d'en ouvrir le quiz lorsqu'il existe.
 
 ## ADDED Requirements
 

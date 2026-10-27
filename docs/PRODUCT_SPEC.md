@@ -1,6 +1,6 @@
 # DevFiches — spécification produit
 
-DevFiches est un site de fiches de révision pour apprendre et réviser le développement informatique. Le lecteur y trouve une notion, la lit, puis se teste.
+DevFiches est un site de fiches d'apprentissage et d'aide-mémoire pour le développement informatique. Le lecteur y trouve une notion, la comprend, retrouve l'essentiel, puis peut se tester.
 
 Le site se présente comme un blog de fiches : chaque fiche est une page stable, consacrée à une notion. Ce n'est pas un fil d'articles signés, datés pour l'actualité, ni un espace de commentaires.
 

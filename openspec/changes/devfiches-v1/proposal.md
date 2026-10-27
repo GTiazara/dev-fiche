@@ -2,7 +2,7 @@
 
 ## Why
 
-Un lecteur qui apprend le développement informatique n'a pas, dans ce dépôt, d'endroit où trouver une notion, la lire avec un exemple, puis se tester. DevFiches comble ce manque par un site de fiches de révision, publiable comme un ensemble de fichiers statiques.
+Un lecteur qui apprend le développement informatique n'a pas, dans ce dépôt, d'endroit où trouver une notion, la comprendre, retrouver l'essentiel, puis se tester. DevFiches comble ce manque par un site de fiches d'apprentissage et d'aide-mémoire, publiable comme un ensemble de fichiers statiques.
 
 ## What Changes
 

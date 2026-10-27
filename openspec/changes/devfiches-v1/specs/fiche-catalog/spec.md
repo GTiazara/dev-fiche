@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Permet au visiteur de trouver une fiche de révision par la technologie, le niveau ou une recherche de notion.
+Permet au visiteur de trouver une fiche d'apprentissage ou d'aide-mémoire par la technologie, le niveau ou une recherche de notion.
 
 ## ADDED Requirements
 
