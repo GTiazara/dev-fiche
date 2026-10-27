@@ -10,7 +10,7 @@ Après chaque modification/chagement de code ou content, éxécute `npm run buil
 
 ## Commenter le code
 
-Documenter le code dans le code.
+Documenter le code.
 
 - Chaque fonction, méthode ou composant qui contient de la logique porte un commentaire juste au-dessus. Il dit à quoi elle sert, ce qu'elle reçoit, ce qu'elle renvoie, et l'effet de bord s'il y en a un.
 - Chaque passage un peu délicat porte un commentaire à l'endroit du passage. Il explique le pourquoi : une règle facile à casser, un index, un cas limite, une différence entre le build et le navigateur.
