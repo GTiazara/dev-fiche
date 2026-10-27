@@ -6,9 +6,12 @@ import { withBase } from '../lib/paths';
 interface Props {
   title: string;
   description: string;
+  noindex?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
+// Le chemin de la page ne contient pas la requête. L'adresse canonique reste donc stable.
+const canonique = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 ---
 <!doctype html>
 <html lang="fr">
@@ -17,6 +20,17 @@ const base = import.meta.env.BASE_URL;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {canonique && (
+      <>
+        <link rel="canonical" href={canonique} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="fr_FR" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonique} />
+      </>
+    )}
     <!-- Le bloc reste brut : sans is:inline, Astro en fait un module et la file _paq part après matomo.js. -->
     <script is:inline>
       var _paq = window._paq = window._paq || [];
