@@ -27,7 +27,9 @@ function applyFilters(): void {
   if (!list || !empty) return;
   let visible = 0;
   list.querySelectorAll<HTMLElement>('[data-technology]').forEach((item) => {
-    const technologyOk = !technology.value || item.dataset.technology === technology.value;
+    // data-technology porte les slugs séparés par une espace : une fiche peut en nommer plusieurs.
+    const technologyOk =
+      !technology.value || (item.dataset.technology ?? '').split(' ').includes(technology.value);
     const levelOk = !difficulty.value || item.dataset.difficulty === difficulty.value;
     const show = technologyOk && levelOk;
     item.hidden = !show;

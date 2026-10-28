@@ -36,7 +36,9 @@ const updated = entry.data.updatedAt.toLocaleDateString('fr-FR', { dateStyle: 'l
     <a class="back-link" href={withBase('/fiches', base)}>← Toutes les fiches</a>
     <header class="fiche-head">
       <p class="fiche-kicker">
-        <a href={withBase(`/technologies/${entry.data.technology}`, base)}>{card.technologyLabel}</a>
+        {card.technologies.map((tech) => (
+          <a href={withBase(`/technologies/${tech.slug}`, base)}>{tech.label}</a>
+        ))}
         <span class="badge neutral">{card.difficultyLabel}</span>
       </p>
       <h1>{card.title}</h1>

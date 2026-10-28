@@ -34,7 +34,7 @@ export type SearchableFiche = {
   description: string;
   headings: string[];
   body: string;
-  technology: string;
+  technologies: { slug: string; label: string }[];
   difficulty: string;
 };
 
@@ -54,13 +54,14 @@ export function ficheMatchesQuery(fiche: SearchableFiche, query: string): boolea
 /**
  * Applique les filtres de technologie et de niveau.
  * Une valeur vide signifie « tous ». Les deux filtres se cumulent.
+ * La fiche passe le filtre de technologie dès que l'une de ses technologies correspond.
  */
 export function matchesFilters(
-  fiche: { technology: string; difficulty: string },
+  fiche: { technologies: { slug: string }[]; difficulty: string },
   technology: string,
   difficulty: string,
 ): boolean {
-  if (technology && fiche.technology !== technology) return false;
+  if (technology && !fiche.technologies.some((item) => item.slug === technology)) return false;
   if (difficulty && fiche.difficulty !== difficulty) return false;
   return true;
 }

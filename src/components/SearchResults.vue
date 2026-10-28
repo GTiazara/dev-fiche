@@ -6,7 +6,6 @@ import { withBase } from '../lib/paths';
 type Result = SearchableFiche & {
   id: string;
   href: string;
-  technologyLabel: string;
   difficultyLabel: string;
   minutes: number;
 };
@@ -86,7 +85,9 @@ onMounted(() => {
     <li v-for="fiche in results" :key="fiche.id" class="card">
       <h2><a :href="fiche.href">{{ fiche.title }}</a></h2>
       <p>{{ fiche.description }}</p>
-      <p class="meta">{{ fiche.technologyLabel }} · {{ fiche.difficultyLabel }} · {{ fiche.minutes }} min</p>
+      <p class="meta">
+        {{ fiche.technologies.map((tech) => tech.label).join(', ') }} · {{ fiche.difficultyLabel }} · {{ fiche.minutes }} min
+      </p>
     </li>
   </ul>
 </template>

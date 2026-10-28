@@ -9,7 +9,7 @@ export type FicheEntryLike = {
   data: {
     title: string;
     description: string;
-    technology: string;
+    technology: string[];
     difficulty: string;
     tags: string[];
     updatedAt: Date;
@@ -47,20 +47,38 @@ export function sortByUpdatedDesc<T extends { data: { updatedAt: Date } }>(entri
 }
 
 /**
- * Compte les valeurs distinctes d'un champ.
- * Sert aux compteurs de l'accueil, calculés sur les fiches publiées seulement.
+ * Compte les valeurs distinctes d'un champ à une seule valeur par fiche.
+ * Sert au compteur de niveaux sur l'accueil, calculé sur les fiches publiées seulement.
  */
 export function distinctCount<T>(entries: T[], pick: (entry: T) => string): number {
   return new Set(entries.map(pick)).size;
 }
+
+/**
+ * Compte les valeurs distinctes d'un champ qui liste plusieurs valeurs par fiche.
+ * Aplatit les listes avant de compter : une fiche qui nomme deux technologies
+ * compte dans les deux, mais chaque technologie n'est comptée qu'une fois au total.
+ */
+export function distinctCountFlat<T>(entries: T[], pick: (entry: T) => string[]): number {
+  return new Set(entries.flatMap(pick)).size;
+}
+
+/**
+ * Indique si une fiche nomme une technologie donnée.
+ * Reçoit la liste de technologies de la fiche et le slug recherché.
+ */
+export function ficheHasTechnology(technologies: string[], slug: string): boolean {
+  return technologies.includes(slug);
+}
+
+export type TechnologyRef = { slug: string; label: string };
 
 export type SearchDocument = {
   id: string;
   href: string;
   title: string;
   description: string;
-  technology: string;
-  technologyLabel: string;
+  technologies: TechnologyRef[];
   difficulty: string;
   difficultyLabel: string;
   minutes: number;
@@ -84,8 +102,8 @@ export function toSearchDocument(entry: FicheEntryLike, base = '/'): SearchDocum
     href: withBase(`/fiches/${entry.id}`, base),
     title: entry.data.title,
     description: entry.data.description,
-    technology: entry.data.technology,
-    technologyLabel: technologyLabel(entry.data.technology),
+    // Une technologie par lien, dans l'ordre écrit dans le frontmatter.
+    technologies: entry.data.technology.map((slug) => ({ slug, label: technologyLabel(slug) })),
     difficulty: entry.data.difficulty,
     difficultyLabel: difficultyLabel(entry.data.difficulty),
     minutes: readingMinutes(body),
