@@ -3,13 +3,15 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import FicheCard from '../../components/FicheCard.astro';
 import FicheFilters from '../../components/FicheFilters.vue';
-import { publishedFiches, sortByUpdatedDesc, toSearchDocument } from '../../lib/fiches';
+import { ficheHasTechnology, publishedFiches, sortByUpdatedDesc, toSearchDocument } from '../../lib/fiches';
 import { technologies } from '../../data/technologies';
+import { withBase } from '../../lib/paths';
 
+const base = import.meta.env.BASE_URL;
 const published = sortByUpdatedDesc(publishedFiches(await getCollection('fiches')));
-const cards = published.map((entry) => toSearchDocument(entry, import.meta.env.BASE_URL));
+const cards = published.map((entry) => toSearchDocument(entry, base));
 const visibleTechnologies = technologies.filter((item) =>
-  published.some((entry) => entry.data.technology === item.slug),
+  published.some((entry) => ficheHasTechnology(entry.data.technology, item.slug)),
 );
 ---
 <Base title="Fiches — DevFiches" description="Toutes les fiches publiées, filtrables par technologie et par niveau.">
@@ -27,8 +29,10 @@ const visibleTechnologies = technologies.filter((item) =>
       <FicheCard
         title={card.title}
         description={card.description}
-        technology={card.technology}
-        technologyLabel={card.technologyLabel}
+        technologies={card.technologies.map((tech) => ({
+          ...tech,
+          href: withBase(`/technologies/${tech.slug}`, base),
+        }))}
         difficulty={card.difficulty}
         difficultyLabel={card.difficultyLabel}
         minutes={card.minutes}

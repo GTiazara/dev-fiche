@@ -8,6 +8,8 @@ export const technologies = [
   { slug: 'linux', label: 'Linux' },
   { slug: 'hpc', label: 'HPC' },
   { slug: 'git', label: 'Git' },
+  { slug: 'devtools', label: 'DevTools' },
+  { slug: 'ml', label: 'ML' },
   { slug: 'backend', label: 'Backend' },
   { slug: 'ia_agent', label: 'IA Agent', icon: '/images/technologies/ia-agent.svg' },
   {

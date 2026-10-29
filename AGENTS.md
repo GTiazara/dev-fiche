@@ -57,6 +57,11 @@ const displayedMonth = date.getMonth() + 1;
 - Le quiz est facultatif. S'il est présent, respecter le schéma technique : 3 à 5 questions, une seule bonne réponse par question et une explication courte.
 - Vérifier le frontmatter et lancer le build après toute modification d'une fiche; un contenu invalide fait échouer la publication.
 
+## Typage
+
+- Quand le langage vérifie les types, chaque paramètre et chaque valeur déstructurée porte un type explicite. Un `any` implicite est une erreur à corriger.
+- Un fichier de route dont le nom finit par `.json.ts` ou `.txt.ts` peut être relu comme du JavaScript au build. Dans ce cas, écrire le type sur place, sans `import type`.
+
 ## Qualité de base
 
 - HTML sémantique, navigation utilisable au clavier, un titre par page.

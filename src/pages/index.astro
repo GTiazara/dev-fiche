@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import {
   distinctCount,
+  distinctCountFlat,
+  ficheHasTechnology,
   publishedCount,
   publishedFiches,
   sortByUpdatedDesc,
@@ -13,18 +15,19 @@ import { withBase } from '../lib/paths';
 
 const all = await getCollection('fiches');
 const published = sortByUpdatedDesc(publishedFiches(all));
-const cards = published.map((entry) => toSearchDocument(entry, import.meta.env.BASE_URL));
-const ficheCount = publishedCount(all);
-const technologyCount = distinctCount(published, (entry) => entry.data.technology);
-const levelCount = distinctCount(published, (entry) => entry.data.difficulty);
 const base = import.meta.env.BASE_URL;
+const cards = published.map((entry) => toSearchDocument(entry, base));
+const ficheCount = publishedCount(all);
+// Une fiche qui nomme deux technologies compte dans les deux : le total aplatit les listes.
+const technologyCount = distinctCountFlat(published, (entry) => entry.data.technology);
+const levelCount = distinctCount(published, (entry) => entry.data.difficulty);
 const visibleTechnologies = technologies.filter((item) =>
-  published.some((entry) => entry.data.technology === item.slug),
+  published.some((entry) => ficheHasTechnology(entry.data.technology, item.slug)),
 );
 
-/** Nombre de fiches publiées pour une technologie. */
+/** Nombre de fiches publiées qui nomment cette technologie, seule ou non. */
 function countByTechnology(slug: string): number {
-  return published.filter((entry) => entry.data.technology === slug).length;
+  return published.filter((entry) => ficheHasTechnology(entry.data.technology, slug)).length;
 }
 ---
 <Base
@@ -93,7 +96,9 @@ function countByTechnology(slug: string): number {
             </time>
             <div class="post-body">
               <p class="post-kicker">
-                <span class="badge">{card.technologyLabel}</span>
+                {card.technologies.map((tech) => (
+                  <a class="badge" href={withBase(`/technologies/${tech.slug}`, base)}>{tech.label}</a>
+                ))}
                 <span class="badge neutral">{card.difficultyLabel}</span>
                 <span class="meta">{card.minutes} min</span>
               </p>

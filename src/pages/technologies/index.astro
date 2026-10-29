@@ -1,17 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { distinctCount, publishedFiches } from '../../lib/fiches';
+import { distinctCountFlat, ficheHasTechnology, publishedFiches } from '../../lib/fiches';
 import { technologies, technologyIcon } from '../../data/technologies';
 import { withBase } from '../../lib/paths';
 
 const published = publishedFiches(await getCollection('fiches'));
 const base = import.meta.env.BASE_URL;
 const visible = technologies
-  .filter((item) => published.some((entry) => entry.data.technology === item.slug))
+  .filter((item) => published.some((entry) => ficheHasTechnology(entry.data.technology, item.slug)))
   .map((item) => ({
     ...item,
-    count: published.filter((entry) => entry.data.technology === item.slug).length,
+    count: published.filter((entry) => ficheHasTechnology(entry.data.technology, item.slug)).length,
   }));
 ---
 <Base title="Technologies — DevFiches" description="Parcourir les fiches par technologie.">
@@ -29,5 +29,5 @@ const visible = technologies
       </li>
     ))}
   </ul>
-  <p class="sr-only">{distinctCount(published, (entry) => entry.data.technology)} technologies publiées</p>
+  <p class="sr-only">{distinctCountFlat(published, (entry) => entry.data.technology)} technologies publiées</p>
 </Base>

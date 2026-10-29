@@ -2,8 +2,7 @@
 interface Props {
   title: string;
   description: string;
-  technology: string;
-  technologyLabel: string;
+  technologies: { slug: string; label: string; href: string }[];
   difficulty: string;
   difficultyLabel: string;
   minutes: number;
@@ -15,12 +14,14 @@ const props = Astro.props;
 ---
 <li
   class="card"
-  data-technology={props.technology}
+  data-technology={props.technologies.map((item) => item.slug).join(' ')}
   data-difficulty={props.difficulty}
 >
   {props.image && <img class="card-image" src={props.image} alt={props.imageAlt ?? ''} loading="lazy" />}
   <span class="badges">
-    <span class="badge">{props.technologyLabel}</span>
+    {props.technologies.map((item) => (
+      <a class="badge" href={item.href}>{item.label}</a>
+    ))}
     <span class="badge neutral">{props.difficultyLabel}</span>
   </span>
   <h2><a href={props.href}>{props.title}</a></h2>

@@ -3,24 +3,29 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import FicheCard from '../../components/FicheCard.astro';
 import FicheFilters from '../../components/FicheFilters.vue';
-import { publishedFiches, sortByUpdatedDesc, toSearchDocument } from '../../lib/fiches';
+import { ficheHasTechnology, publishedFiches, sortByUpdatedDesc, toSearchDocument } from '../../lib/fiches';
 import { technologyLabel } from '../../data/technologies';
+import { withBase } from '../../lib/paths';
 
 /**
  * Une page par technologie qui a au moins une fiche publiée.
- * Une technologie sans fiche n'a pas d'adresse.
+ * Une technologie sans fiche n'a pas d'adresse. Une fiche qui en nomme plusieurs
+ * a une page pour chacune.
  */
 export async function getStaticPaths() {
   const published = publishedFiches(await getCollection('fiches'));
-  const slugs = [...new Set(published.map((entry) => entry.data.technology))];
+  const slugs = [...new Set(published.flatMap((entry) => entry.data.technology))];
   return slugs.map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
+const base = import.meta.env.BASE_URL;
 const published = sortByUpdatedDesc(
-  publishedFiches(await getCollection('fiches')).filter((entry) => entry.data.technology === slug),
+  publishedFiches(await getCollection('fiches')).filter((entry) =>
+    ficheHasTechnology(entry.data.technology, slug ?? ''),
+  ),
 );
-const cards = published.map((entry) => toSearchDocument(entry, import.meta.env.BASE_URL));
+const cards = published.map((entry) => toSearchDocument(entry, base));
 const label = technologyLabel(slug ?? '');
 ---
 <Base title={`${label} — DevFiches`} description={`Fiches publiées pour ${label}.`}>
@@ -38,8 +43,10 @@ const label = technologyLabel(slug ?? '');
       <FicheCard
         title={card.title}
         description={card.description}
-        technology={card.technology}
-        technologyLabel={card.technologyLabel}
+        technologies={card.technologies.map((tech) => ({
+          ...tech,
+          href: withBase(`/technologies/${tech.slug}`, base),
+        }))}
         difficulty={card.difficulty}
         difficultyLabel={card.difficultyLabel}
         minutes={card.minutes}

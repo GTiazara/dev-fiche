@@ -3,7 +3,7 @@
  * Autorise les pages publiques. Ajoute l'adresse du plan lorsque le site est connu.
  * L'adresse du site reçoit une barre finale : sans elle, le nom du dernier dossier serait remplacé.
  */
-export const GET = ({ site }) => {
+export const GET = ({ site }: { site: URL | undefined }) => {
   const lignes = ['User-agent: *', 'Allow: /'];
   if (site) {
     const racine = site.href.endsWith('/') ? site.href : `${site.href}/`;
