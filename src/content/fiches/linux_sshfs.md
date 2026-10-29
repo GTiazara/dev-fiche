@@ -76,7 +76,7 @@ Les exemples suivants utilisent deux machines Linux :
 
 | Machine | Exemple | Rôle |
 | --- | --- | --- |
-| Serveur | `192.168.1.100` | Héberge les fichiers |
+| Serveur | `host_name_or_ip` | Héberge les fichiers |
 | Client | Poste de travail local | Accède aux fichiers distants |
 | Utilisateur distant | `utilisateur` | Compte utilisé pour la connexion SSH |
 | Répertoire distant | `/data/big_data_folder` | Dossier contenant les données |
@@ -106,7 +106,7 @@ Avant de monter un répertoire, vérifiez que la connexion au serveur fonctionne
 
 ```bash
 # Se connecter au serveur distant
-ssh utilisateur@192.168.1.100
+ssh utilisateur@host_name_or_ip
 ```
 
 Si la connexion réussit, vous pouvez accéder au serveur avec le compte indiqué.
@@ -148,7 +148,7 @@ sshfs utilisateur@serveur:/chemin/distant /chemin/local
 Exemple concret :
 
 ```bash
-sshfs utilisateur@192.168.1.100:/data/big_data_folder ~/mnt/big_data_folder
+sshfs utilisateur@host_name_or_ip:/data/big_data_folder ~/mnt/big_data_folder
 ```
 
 Après le montage, vous pouvez consulter les fichiers distants avec les commandes habituelles :
@@ -224,7 +224,7 @@ Suivez les instructions. Il est recommandé de protéger la clé privée par une
 ### 2. Installer la clé publique sur le serveur
 
 ```bash
-ssh-copy-id utilisateur@192.168.1.100
+ssh-copy-id utilisateur@host_name_or_ip
 ```
 
 Cette commande ajoute la clé publique au compte distant, si le serveur autorise cette méthode.
@@ -232,7 +232,7 @@ Cette commande ajoute la clé publique au compte distant, si le serveur autorise
 ### 3. Tester la connexion
 
 ```bash
-ssh utilisateur@192.168.1.100
+ssh utilisateur@host_name_or_ip
 ```
 
 Si la configuration fonctionne, vous pourrez généralement vous connecter sans saisir le mot de passe du compte distant à chaque fois. Une phrase secrète de clé peut néanmoins être demandée si la clé n'est pas chargée dans un agent SSH.
@@ -253,7 +253,7 @@ Pour des traitements géospatiaux portant sur de nombreux petits fichiers, garde
 
 Supposons que les big_data_folder soient stockées sur un serveur de calcul :
 
-- Serveur : `192.168.1.100`
+- Serveur : `host_name_or_ip`
 - Répertoire distant : `/data/big_data_folder`
 - Répertoire local : `~/mnt/big_data_folder`
 
@@ -264,7 +264,7 @@ Sur le client :
 mkdir -p ~/mnt/big_data_folder
 
 # Monter les big_data_folder
-sshfs utilisateur@192.168.1.100:/data/big_data_folder ~/mnt/big_data_folder
+sshfs utilisateur@host_name_or_ip:/data/big_data_folder ~/mnt/big_data_folder
 
 # Vérifier que les fichiers sont visibles
 ls -lah ~/mnt/big_data_folder
@@ -321,7 +321,7 @@ Un autre point important : les permissions visibles à travers SSHFS dépendent 
 Pour obtenir davantage d'informations sur la connexion SSH :
 
 ```bash
-ssh -vvv utilisateur@192.168.1.100
+ssh -vvv utilisateur@host_name_or_ip
 ```
 
 Cette commande affiche des informations de diagnostic détaillées. Avant de partager les journaux, masquez les noms d'utilisateur, adresses IP publiques et autres informations sensibles.
@@ -343,17 +343,17 @@ Exemples :
 
 ```bash
 # Monter en lecture seule
-sshfs -o ro utilisateur@192.168.1.100:/data/big_data_folder ~/mnt/big_data_folder
+sshfs -o ro utilisateur@host_name_or_ip:/data/big_data_folder ~/mnt/big_data_folder
 ```
 
 ```bash
 # Utiliser un port SSH personnalisé
-sshfs -p 2222 utilisateur@192.168.1.100:/data/big_data_folder ~/mnt/big_data_folder
+sshfs -p 2222 utilisateur@host_name_or_ip:/data/big_data_folder ~/mnt/big_data_folder
 ```
 
 ```bash
 # Spécifier une clé privée
-sshfs -o IdentityFile=~/.ssh/id_ed25519 utilisateur@192.168.1.100:/data/big_data_folder ~/mnt/big_data_folder
+sshfs -o IdentityFile=~/.ssh/id_ed25519 utilisateur@host_name_or_ip:/data/big_data_folder ~/mnt/big_data_folder
 ```
 
 L'option `reconnect` peut être utile sur certaines connexions instables, mais elle ne garantit pas la récupération de toutes les opérations après une coupure réseau. Vérifiez toujours que le serveur est accessible avant de relancer un traitement important.
@@ -396,7 +396,7 @@ sudo apt install sshfs
 mkdir -p ~/mnt/big_data_folder
 
 # Monter le répertoire distant
-sshfs utilisateur@192.168.1.100:/data/big_data_folder ~/mnt/big_data_folder
+sshfs utilisateur@host_name_or_ip:/data/big_data_folder ~/mnt/big_data_folder
 
 # Vérifier le contenu
 ls -lah ~/mnt/big_data_folder
