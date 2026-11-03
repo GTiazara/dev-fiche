@@ -3,15 +3,16 @@
  * `icon` est facultatif : chemin d'un fichier du dossier public/, par exemple /images/technologies/git.svg.
  */
 export const technologies = [
-  { slug: 'javascript', label: 'JavaScript' },
-  { slug: 'python', label: 'Python' },
-  { slug: 'linux', label: 'Linux' },
-  { slug: 'hpc', label: 'HPC' },
-  { slug: 'git', label: 'Git' },
-  { slug: 'devtools', label: 'DevTools' },
-  { slug: 'ml', label: 'ML' },
-  { slug: 'backend', label: 'Backend' },
-  { slug: 'ia', label: 'IA' },
+  { slug: 'javascript', label: 'JavaScript', icon: '/images/technologies/javascript.svg' },
+  { slug: 'python', label: 'Python', icon: '/images/technologies/python.svg' },
+  { slug: 'linux', label: 'Linux', icon: '/images/technologies/linux.svg' },
+  { slug: 'hpc', label: 'HPC', icon: '/images/technologies/hpc.svg' },
+  { slug: 'git', label: 'Git', icon: '/images/technologies/git.svg' },
+  { slug: 'devtools', label: 'DevTools', icon: '/images/technologies/devtools.svg' },
+  { slug: 'ml', label: 'ML', icon: '/images/technologies/ml.svg' },
+  { slug: 'deeplearning', label: 'Deep Learning', icon: '/images/technologies/deeplearning.svg' },
+  { slug: 'backend', label: 'Backend', icon: '/images/technologies/backend.svg' },
+  { slug: 'ia', label: 'IA', icon: '/images/technologies/ia.svg' },
   { slug: 'ia_agent', label: 'IA Agent', icon: '/images/technologies/ia-agent.svg' },
   {
     slug: 'transfert_fichiers',

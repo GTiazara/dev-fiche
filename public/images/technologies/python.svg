@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Python">
+  <path d="M24 5c-8 0-9 3-9 6v5h10v2H11c-4 0-6 3-6 8s2 8 6 8h4v-6c0-3 2-5 5-5h10c3 0 5-2 5-5v-7c0-3-3-6-11-6Z" fill="#3776ab" />
+  <path d="M24 43c8 0 9-3 9-6v-5H23v-2h14c4 0 6-3 6-8s-2-8-6-8h-4v6c0 3-2 5-5 5H18c-3 0-5 2-5 5v7c0 3 3 6 11 6Z" fill="#f2c94c" />
+  <circle cx="19.5" cy="10.5" r="1.8" fill="#ffffff" />
+  <circle cx="28.5" cy="37.5" r="1.8" fill="#1f2937" />
+</svg>
