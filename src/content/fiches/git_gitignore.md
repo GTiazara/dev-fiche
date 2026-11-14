@@ -9,7 +9,7 @@ tags:
   - depot
   - secrets
 publishedAt: 2026-10-30
-updatedAt: 2026-10-30
+updatedAt: 2026-11-13
 draft: false
 quiz:
   - question: "Une nouvelle ligne de .gitignore retire-t-elle un fichier déjà suivi par Git ?"
@@ -128,6 +128,22 @@ git rm -r --cached build/
 ```
 
 Ces commandes préparent le retrait dans l'index. Le commit suivant l'enregistre. Le fichier reste sur le disque, et la règle de `.gitignore` s'applique ensuite. Cela n'efface pas les commits déjà publiés : un secret commité une fois reste dans l'historique.
+
+Pour retirer plusieurs fichiers qui correspondent à un motif, par exemple tous les dossiers `__pycache__` déjà commités, on demande d'abord à Git la liste des fichiers suivis, puis on la passe à `git rm` :
+
+```bash
+git ls-files '*__pycache__*' | xargs -r git rm -r --cached
+```
+
+`git ls-files` affiche uniquement les chemins suivis qui correspondent au motif, et non ceux que Git ignore déjà. `xargs` transforme chaque ligne en argument de `git rm`. L'option `-r` de `xargs` (GNU/Linux) évite d'appeler `git rm` quand la liste est vide.
+
+Cette variante gère aussi les noms contenant des espaces ou des retours à la ligne, car elle sépare les chemins par un caractère nul :
+
+```bash
+git ls-files -z '*__pycache__*' | xargs -0 -r git rm -r --cached
+```
+
+Après cette commande, ajoute `__pycache__/` au `.gitignore`, puis fais un commit. Le retrait est enregistré, et les nouveaux fichiers générés restent ignorés.
 
 Pour ajouter quand même un fichier ignoré :
 
