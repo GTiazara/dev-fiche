@@ -9,7 +9,7 @@ export type FicheEntryLike = {
   data: {
     title: string;
     description: string;
-    technology: string[];
+    technology: string | string[];
     difficulty: string;
     tags: string[];
     updatedAt: Date;
@@ -103,7 +103,10 @@ export function toSearchDocument(entry: FicheEntryLike, base = '/'): SearchDocum
     title: entry.data.title,
     description: entry.data.description,
     // Une technologie par lien, dans l'ordre écrit dans le frontmatter.
-    technologies: entry.data.technology.map((slug) => ({ slug, label: technologyLabel(slug) })),
+    technologies: (Array.isArray(entry.data.technology)
+      ? entry.data.technology
+      : [entry.data.technology]
+    ).map((slug) => ({ slug, label: technologyLabel(slug) })),
     difficulty: entry.data.difficulty,
     difficultyLabel: difficultyLabel(entry.data.difficulty),
     minutes: readingMinutes(body),

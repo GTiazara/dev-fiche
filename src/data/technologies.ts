@@ -6,6 +6,7 @@ export const technologies = [
   { slug: 'javascript', label: 'JavaScript', icon: '/images/technologies/javascript.svg' },
   { slug: 'python', label: 'Python', icon: '/images/technologies/python.svg' },
   { slug: 'linux', label: 'Linux', icon: '/images/technologies/linux.svg' },
+  { slug: 'android', label: 'Android' },
   { slug: 'hpc', label: 'HPC', icon: '/images/technologies/hpc.svg' },
   { slug: 'git', label: 'Git', icon: '/images/technologies/git.svg' },
   { slug: 'devtools', label: 'DevTools', icon: '/images/technologies/devtools.svg' },
