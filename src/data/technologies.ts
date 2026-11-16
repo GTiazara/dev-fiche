@@ -29,6 +29,11 @@ export const technologies = [
     label: 'Cloud',
     icon: '/images/technologies/cloud.svg',
   },
+  {
+    slug: 'securite',
+    label: 'Sécurité',
+    icon: '/images/technologies/securite.svg',
+  },
 ] as const;
 
 /** Icône facultative d'une technologie, ou undefined. */

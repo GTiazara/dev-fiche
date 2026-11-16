@@ -35,7 +35,7 @@ Le reste de la page reste du HTML statique.
 
 ## Schéma d'une fiche
 
-Emplacement : `src/content/fiches/<slug>.md`. Le nom du fichier est l'identifiant de la fiche.
+Emplacement : `src/content/fiches/<dossier>/<slug>.md`, avec un dossier de rangement facultatif et de profondeur libre. Le nom du fichier, sans dossier ni extension, est l'identifiant de la fiche et son adresse (`/fiches/<slug>`). Le dossier n'entre pas dans l'adresse et n'a aucun effet sur la technologie, qui vient du frontmatter. Deux fiches ne peuvent pas porter le même nom de fichier : le build échoue et cite les deux chemins.
 
 Les technologies autorisées vivent dans une liste du projet (`slug` et libellé). La première version n'en déclare que trois : `javascript`, `python`, `git`. Ajouter une technologie, c'est l'ajouter à cette liste.
 

@@ -22,7 +22,9 @@ npm run build
 
 ## Ajouter une fiche
 
-Créer `src/content/fiches/<identifiant>.md`. Le nom du fichier devient l'adresse `/fiches/<identifiant>`.
+Créer `src/content/fiches/<dossier>/<identifiant>.md`, par exemple `src/content/fiches/git/git_gitignore.md`. Le nom du fichier, sans dossier, devient l'adresse `/fiches/<identifiant>`.
+
+Le dossier sert seulement à ranger : il peut être imbriqué, il n'apparaît jamais dans l'adresse et il ne remplace pas le champ `technology` du frontmatter. Deux fiches ne peuvent pas porter le même nom de fichier, même dans deux dossiers : le build échoue et cite les deux chemins.
 
 ```yaml
 ---
