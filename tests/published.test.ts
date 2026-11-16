@@ -20,7 +20,7 @@ function entry(id: string, draft: boolean) {
     data: {
       title: id,
       description: 'Extrait',
-      technology: 'git',
+      technology: ['git'],
       difficulty: 'debutant',
       tags: [],
       updatedAt: new Date('2026-10-01'),
