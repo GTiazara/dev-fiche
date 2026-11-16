@@ -3,7 +3,7 @@
 
 DevFiches est un site statique de fiches d'apprentissage et d'aide-mémoire sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pratique consacrée à une notion : la comprendre, puis retrouver la commande ou l'exemple. Ce n'est pas un article d'actualité.
 
-Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fiches/`. Les spécifications produit et technique du dépôt font foi pour le contenu, les champs et les contraintes de publication.
+Les fiches sont des fichiers Markdown avec frontmatter YAML dans `src/content/fiches/`, rangés en sous-dossiers par sujet (`git/`, `ml/`, etc.). Le dossier ne change ni l'adresse ni la technologie, et le nom d'un fichier est unique sur tout le dépôt. Les spécifications produit et technique du dépôt font foi pour le contenu, les champs et les contraintes de publication.
 
 ## Qualité de code après modification: 
 Après chaque modification/chagement de code ou content, éxécute `npm run build` pour vérifier s'il n'y a pas bug
