@@ -30,6 +30,15 @@ export default defineConfig({
   integrations: [vue(), ...(site ? [sitemap({ filter: pageEstIndexable })] : [])],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        // Ces dossiers ne changent jamais la page en développement. Ne pas les surveiller
+        // économise des surveillances `inotify` : la limite de Linux est partagée avec
+        // l'éditeur, et `astro dev` plante avec ENOSPC quand elle est atteinte.
+        // `src/` et `public/` restent surveillés.
+        ignored: ['**/openspec/**', '**/docs/**', '**/tests/**', '**/e2e/**', '**/.agents/**', '**/dist/**'],
+      },
+    },
   },
   markdown: {
     shikiConfig: { theme: 'github-dark' },

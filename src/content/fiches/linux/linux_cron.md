@@ -195,13 +195,13 @@ crontab -e
 
 Ajouter cette ligne pour exécuter le script chaque jour à 2 h 30 :
 
-```cron
+```text
 30 2 * * * /home/dev/scripts/cleanup.sh
 ```
 
 ### 4. Rediriger la sortie vers un fichier de logs
 
-```cron
+```text
 30 2 * * * /home/dev/scripts/cleanup.sh >> /home/dev/logs/cron.log 2>&1
 ```
 
@@ -224,7 +224,7 @@ Il faut notamment faire attention à :
 
 Exemple :
 
-```cron
+```text
 PATH=/usr/local/bin:/usr/bin:/bin
 SHELL=/bin/bash
 MAILTO=""
@@ -273,7 +273,7 @@ Cron peut être utilisé pour automatiser de nombreuses opérations techniques.
 
 ### Exemple : sauvegarde PostgreSQL
 
-```cron
+```text
 0 3 * * * /usr/bin/pg_dump -U app_user ma_base > /home/dev/backups/ma_base.sql 2>> /home/dev/logs/backup.log
 ```
 
@@ -332,7 +332,7 @@ Pour des besoins complexes, comme la gestion des dépendances entre tâches, les
 
 Pour une tâche qui ne doit pas s'exécuter en parallèle avec elle-même, `flock` peut être utilisé lorsqu'il est disponible :
 
-```cron
+```text
 */5 * * * * /usr/bin/flock -n /tmp/mon-job.lock /home/dev/scripts/job.sh >> /home/dev/logs/job.log 2>&1
 ```
 
