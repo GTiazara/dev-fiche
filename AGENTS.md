@@ -1,4 +1,3 @@
-
 ## Contexte de DevFiches
 
 DevFiches est un site statique de fiches d'apprentissage et d'aide-mémoire sur le développement informatique. Il s'adresse aux débutants, aux étudiants et aux développeurs. Chaque fiche est une page pratique consacrée à une notion : la comprendre, puis retrouver la commande ou l'exemple. Ce n'est pas un article d'actualité.
