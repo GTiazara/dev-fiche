@@ -10,7 +10,7 @@ tags:
   - git
   - terminal
 publishedAt: 2026-11-09
-updatedAt: 2026-11-09
+updatedAt: 2026-11-23
 draft: false
 quiz:
   - question: "Quelle est la différence entre git et glab ?"
@@ -71,13 +71,13 @@ glab mr --help
 
 # 3. S'authentifier auprès de GitLab
 
-Lance l'assistant de connexion :
+Lance l'assistant de connexion (recommandé en local) :
 
 ```bash
 glab auth login
 ```
 
-Choisis l'hôte GitLab et la méthode d'authentification proposées. Pour une instance auto-hébergée, indique l'hôte correspondant, par exemple `gitlab.exemple.fr`.
+Choisis l'hôte GitLab et la méthode d'authentification proposées (token ou OAuth). Pour une instance auto-hébergée, indique l'hôte correspondant, par exemple `gitlab.exemple.fr`.
 
 Vérifie l'état de la connexion :
 
@@ -85,7 +85,34 @@ Vérifie l'état de la connexion :
 glab auth status
 ```
 
-La session de `glab` et l'accès Git en HTTPS ou en SSH sont liés à la configuration de la machine, mais ce sont des aspects distincts. Vérifie le protocole de ton dépôt avec :
+## Credential helper Git
+
+`glab` peut servir de **credential helper** pour les remotes Git en HTTPS : il fournit le token stocké à `git pull` / `git push`, et peut rafraîchir un token OAuth. Le flag `--setup-git-credential-helper` configure ce helper **sans poser la question** ; il **ne remplace pas** une méthode de connexion.
+
+Vérifie que ta version de `glab` le propose (flag récent) :
+
+```bash
+glab auth login --help | grep setup-git-credential-helper
+```
+
+| Situation | Commande |
+| --- | --- |
+| Login interactif | `glab auth login` — le prompt peut proposer le helper |
+| OAuth navigateur + helper | `glab auth login --hostname gitlab.com --web --setup-git-credential-helper` |
+| Token + helper (script / CI) | `glab auth login --hostname gitlab.com --token "$GITLAB_TOKEN" --setup-git-credential-helper` |
+| Sans navigateur local | `glab auth login --hostname gitlab.com --device` (+ helper si besoin) |
+
+En **non-interactif**, il faut au moins une méthode parmi `--web`, `--token`, `--stdin`, `--job-token`, `--device`. Sinon :
+
+```bash
+# Incorrect : helper seul, sans login
+glab auth login --hostname gitlab.com --setup-git-credential-helper
+# → erreur : '--stdin', '--token', '--job-token', '--web', or '--device' required…
+```
+
+Quand les personal access tokens sont désactivés sur l'instance, GitLab recommande OAuth + `glab` comme helper plutôt que Git Credential Manager. Les droits du token (legacy ou fine-grained) sont détaillés dans la fiche tokens GitLab.
+
+La session de `glab` et l'accès Git en HTTPS ou en SSH restent des aspects distincts. Vérifie le protocole de ton dépôt avec :
 
 ```bash
 git remote -v
@@ -221,6 +248,7 @@ Pour un agent ou un script, limite les droits, évite de transmettre des secrets
 
 - `git` gère les versions du code ; `glab` interagit avec les fonctionnalités de GitLab.
 - `glab auth login` configure une connexion et `glab auth status` permet de la vérifier.
+- `--setup-git-credential-helper` configure le helper Git HTTPS ; il faut aussi `--web`, `--token`, `--stdin`, `--job-token` ou `--device` en non-interactif.
 - Les commandes principales utilisent les groupes `repo`, `issue`, `mr` et `pipeline`.
 - Une merge request propose des changements à la revue et à l'intégration ; elle n'est pas un commit.
 - Les droits du compte et les règles du projet encadrent les opérations possibles.
