@@ -12,6 +12,7 @@ export const technologies = [
   { slug: 'devtools', label: 'DevTools', icon: '/images/technologies/devtools.svg' },
   { slug: 'ml', label: 'ML', icon: '/images/technologies/ml.svg' },
   { slug: 'deeplearning', label: 'Deep Learning', icon: '/images/technologies/deeplearning.svg' },
+  { slug: 'gpu', label: 'GPU', icon: '/images/technologies/gpu.svg' },
   { slug: 'backend', label: 'Backend', icon: '/images/technologies/backend.svg' },
   { slug: 'ia', label: 'IA', icon: '/images/technologies/ia.svg' },
   { slug: 'ia_agent', label: 'IA Agent', icon: '/images/technologies/ia-agent.svg' },

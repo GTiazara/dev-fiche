@@ -1,6 +1,6 @@
 ---
 title: "Gérer les conflits Git, cas des branches divergentes"
-description: "Comprendre et résoudre les conflits de merge et de rebase : fetch, stash, marqueurs, ours/theirs, rebase --skip, force-with-lease."
+description: "Comprendre et résoudre les conflits de merge et de rebase : fetch, stash (push, apply, pop, drop), marqueurs, ours/theirs, force-with-lease."
 technology: git
 difficulty: debutant
 tags:
@@ -72,7 +72,7 @@ Quand les branches ont **divergé** — chacune a des commits que l'autre n'a pa
 | `git rebase --skip` | Saute le commit en cours quand il devient inutile |
 | Commit de fusion | Commit créé par un `merge` — a deux parents |
 | `--force-with-lease` | Poussée forcée, mais refuse d'écraser si la branche distante a bougé |
-| `git stash` | Met de côté les modifications non enregistrées |
+| `git stash` | Met de côté, liste, réapplique ou supprime des modifications non enregistrées (`stash@{n}`) |
 
 ## Diagnostiquer
 
@@ -93,30 +93,116 @@ git log --oneline ma-branche -5
 
 `git log --graph` affiche deux lignes : la branche locale et `origin/ma-branche`. Tant qu'elles n'ont pas de point de convergence récent, elles ont divergé.
 
-## Mettre de côté le travail non enregistré
+## Mettre de côté et récupérer le travail non enregistré (`git stash`)
 
-Un rebase ou un merge demande souvent un **arbre de travail propre**. Si vous avez des modifications non commitées (fichiers suivis, et éventuellement non suivis), mettez-les de côté avant :
+Un rebase ou un merge demande souvent un **arbre de travail propre**. Les modifications non commitées se mettent de côté avec `git stash`, puis se réintègrent après.
+
+Les entrées s'empilent : `stash@{0}` est la plus récente, `stash@{1}` celle d'avant, et ainsi de suite. On peut aussi écrire seulement l'indice : `0` pour `stash@{0}`.
+
+### Enregistrer un stash
 
 ```bash
-# -u : inclut aussi les fichiers non suivis
-# -m : message pour retrouver ce stash plus tard
+# Cas courant avant un rebase : message + fichiers non suivis
 git stash push -u -m "wip avant rebase"
+
+# Seulement ce qui est déjà indexé (staged)
+git stash push -S -m "index seul"
+
+# Garder l'index intact, stasher le reste du working tree
+git stash push -k -m "garder le staged"
+
+# Uniquement certains chemins
+git stash push -m "fichier A" -- chemin/a.md chemin/b.md
 ```
 
-Sans `-u`, les fichiers **non suivis** restent en place et peuvent encore bloquer ou polluer l'opération. Vérifier ensuite :
+| Option | Effet |
+| --- | --- |
+| `-m "…"` | Message pour retrouver le stash dans la liste |
+| `-u` | Inclut aussi les fichiers **non suivis** |
+| `-a` | Inclut aussi les fichiers **ignorés** (`.gitignore`) |
+| `-S` | Stash **uniquement** ce qui est indexé |
+| `-k` | Laisse l'index en place ; stash le reste |
+| `-- chemin` | Limite le stash à ces fichiers |
+
+Sans `-u`, les fichiers non suivis restent en place et peuvent encore bloquer ou polluer l'opération.
+
+### Lister et inspecter
 
 ```bash
-git status    # doit être propre, hors commits déjà enregistrés
 git stash list
+git stash show                 # résumé du stash le plus récent
+git stash show -p stash@{1}    # diff complet d'une entrée précise
+git stash show -u stash@{0}    # inclut les fichiers non suivis du stash
 ```
 
-Après le rebase (ou le merge) réussi, récupérer le travail :
+Vérifier que le working tree est propre avant le rebase :
 
 ```bash
-git stash pop
+git status
 ```
 
-S'il y a un conflit au moment du `pop`, le résoudre comme un conflit classique, puis `git add` et, si besoin, `git stash drop` une fois le stash appliqué.
+### Réintégrer un stash
+
+```bash
+# Appliquer le plus récent, puis le retirer de la liste
+git stash pop
+
+# Appliquer sans retirer (utile pour tester, ou pour réutiliser ailleurs)
+git stash apply
+
+# Une entrée précise
+git stash pop stash@{2}
+git stash apply stash@{1}
+
+# Réappliquer aussi l'état de l'index (fichiers staged)
+git stash pop --index
+git stash apply --index stash@{0}
+```
+
+| Commande | Effet |
+| --- | --- |
+| `pop` | Applique **et** retire le stash s'il n'y a pas de conflit |
+| `apply` | Applique **sans** retirer le stash |
+| `--index` | Tente de restaurer aussi ce qui était indexé |
+| `stash@{n}` | Cible une entrée précise, pas seulement la plus récente |
+
+### Conflit pendant `pop` ou `apply`
+
+Si la réintégration entre en conflit avec l'arbre actuel :
+
+1. résoudre les fichiers comme un conflit classique (marqueurs, puis `git add`) ;
+2. le stash **n'est pas retiré** en cas de conflit sur `pop` — le supprimer ensuite à la main :
+
+```bash
+git stash drop stash@{0}
+```
+
+Si le stash n'a plus lieu d'être après une résolution partielle ratée, `git rebase --abort` ou un retour arrière du working tree ne le recrée pas : le stash reste dans la liste tant qu'on ne fait pas `drop` / `clear`.
+
+### Autres manipulations utiles
+
+```bash
+# Créer une branche à partir d'un stash, puis l'appliquer dessus
+git stash branch wip-depuis-stash stash@{0}
+
+# Supprimer une entrée
+git stash drop stash@{1}
+
+# Vider toute la pile (irréversible)
+git stash clear
+```
+
+`git stash branch` est utile quand le stash ne s'applique plus proprement sur la branche actuelle : on repart d'une branche dédiée basée sur le commit d'origine du stash.
+
+### Enchaînement typique autour d'un conflit
+
+```bash
+git stash push -u -m "wip avant rebase"
+git fetch origin
+git rebase origin/ma-branche
+# … résoudre les conflits, continue / skip …
+git stash pop          # ou : git stash apply stash@{0} puis git stash drop
+```
 
 ## Solution recommandée : rebaser
 
@@ -252,6 +338,8 @@ Les conflits d'un merge se résolvent comme ceux d'un rebase : éditer les marqu
 
 ## Bonnes pratiques
 
+- **Nommer les stash** avec `-m` et les lister avant un `pop` : plusieurs stash s'accumulent vite (`stash@{0}`, `stash@{1}`, …).
+- **Préférer `apply` puis `drop`** quand on n'est pas sûr que la réintégration passera sans conflit.
 - **Aller jusqu'au bout** : après chaque conflit, `git rebase --continue` (ou `--skip` si le commit est inutile), jusqu'à la fin, ou `git rebase --abort` pour tout annuler.
 - **Activer `zdiff3`** une fois pour toutes : l'ancêtre commun réduit les mauvaises résolutions.
 - **Ne pas confondre ours et theirs** entre merge et rebase.
@@ -263,7 +351,7 @@ Les conflits d'un merge se résolvent comme ceux d'un rebase : éditer les marqu
 ## À retenir
 
 - « Divergée » = chaque branche a des commits que l'autre n'a pas ; un `git pull` simple peut ne plus suffire.
-- Avant un rebase ou un merge : `git stash push -u -m "…"`, puis `git stash pop` après.
+- Avant un rebase ou un merge : `git stash push -u -m "…"`. Après : `git stash pop`, ou `apply stash@{n}` puis `drop` si besoin. `pop` retire le stash seulement s'il n'y a pas de conflit.
 - Chemin linéaire : `git rebase origin/ma-branche`, résoudre, `git add`, `git rebase --continue` (ou `--skip`), puis `git push` (ou `--force-with-lease` si besoin).
 - `ours` / `theirs` changent de sens entre merge et rebase ; `zdiff3` montre l'ancêtre commun.
 - Les binaires et les suppressions n'ont souvent pas de marqueurs : choisir une version, puis `git add` ou `git rm`.
