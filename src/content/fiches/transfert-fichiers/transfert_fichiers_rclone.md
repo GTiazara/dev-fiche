@@ -5,7 +5,7 @@ technology: transfert_fichiers
 difficulty: intermediaire
 tags: [rclone, cloud, s3, synchronisation, sauvegarde]
 publishedAt: 2026-10-25
-updatedAt: 2026-10-25
+updatedAt: 2026-11-24
 draft: false
 quiz:
   - question: Quelle est la différence majeure entre rclone copy et rclone sync ?
@@ -43,58 +43,110 @@ Avant de communiquer avec un service cloud, on déclare un « remote » dans Rcl
 rclone config
 ```
 
-Les informations sont enregistrées dans un fichier de configuration (généralement `~/.config/rclone/rclone.conf`). Chaque remote configuré s'utilise ensuite avec la syntaxe `nom-du-remote:`.
+Les informations sont enregistrées dans un fichier de configuration (généralement `~/.config/rclone/rclone.conf`). Chaque remote configuré s'utilise ensuite avec la syntaxe `nom-du-remote:chemin`.
 
-## Commandes principales
+## Commandes du quotidien
+
+### Voir les remotes configurés
+
+```bash
+rclone listremotes
+rclone listremotes --long    # nom + type (+ description)
+rclone listremotes --json    # sortie machine
+```
+
+`listremotes` affiche les remotes du fichier de config **et** ceux définis par des variables d'environnement. Chaque nom s'utilise avec un `:` à la fin (`mon-s3:`).
+
+### Lister fichiers et dossiers
+
+| Commande | Rôle | Récursion |
+| --- | --- | --- |
+| `rclone ls remote:path` | Taille + chemin des **fichiers** | Oui par défaut (`--max-depth 1` pour limiter) |
+| `rclone lsl remote:path` | Date de modif + taille + chemin | Oui par défaut |
+| `rclone lsd remote:path` | **Dossiers** / buckets seulement | Non (`-R` pour récursif) |
+| `rclone lsf remote:path` | Liste simple, facile à parser | Non (`-R` pour récursif) |
+| `rclone lsjson remote:path` | JSON (scripts) | Non (`-R` pour récursif) |
+| `rclone tree remote:path` | Arborescence lisible | Selon options |
+| `rclone size remote:path` | Nombre d'objets + volume total | — |
+| `rclone about remote:` | Quota / espace libre (si le backend le fournit) | — |
+
+```bash
+rclone ls mon-s3:mon-bucket/
+rclone lsd mon-s3:
+rclone lsf mon-s3:mon-bucket/sauvegardes/ -R
+rclone lsjson mon-s3:mon-bucket/docs --files-only
+rclone about mon-s3:
+```
+
+### Copier, synchroniser, vérifier
 
 | Commande | Rôle |
 | --- | --- |
-| `rclone config` | Gestion interactive des fournisseurs distants |
-| `rclone copy source: dest:` | Copie les fichiers nouveaux ou modifiés sans rien supprimer |
-| `rclone sync source: dest:` | Synchronise la cible en miroir strict (supprime les fichiers orphelins) |
-| `rclone lsf remote:path` | Liste les fichiers et dossiers distants |
-| `rclone size remote:path` | Affiche le nombre d'objets et l'espace total occupé |
-| `rclone check source: dest:` | Vérifie l'intégrité et compare les sommes de contrôle |
-| `rclone mount remote: /point` | Monte un stockage cloud distant comme dossier local (via FUSE) |
+| `rclone copy source dest` | Copie / met à jour ; **ne supprime rien** en destination |
+| `rclone sync source dest` | Miroir : la destination devient identique à la source (**supprime** les orphelins) |
+| `rclone move source dest` | Déplace (copie puis suppression côté source, selon backend) |
+| `rclone copyto` / `moveto` | Un **fichier** (ou chemin) précis vers une cible précise |
+| `rclone check source dest` | Compare source et destination (intégrité) |
+| `rclone mkdir remote:path` | Crée un dossier / préfixe |
+| `rclone delete remote:path` | Supprime des **fichiers** (garde les dossiers vides selon cas) |
+| `rclone purge remote:path` | Vide un chemin (fichiers **et** dossiers) — destructif |
+| `rclone mount remote: /mnt/x` | Monte le remote en local (FUSE) |
+| `rclone config` | Assistant pour créer / modifier / supprimer un remote |
+| `rclone version` | Version installée |
+
+Le local n'a pas de préfixe `remote:` : `./documents/` ou `/chemin/absolu` suffit.
 
 ## La distinction copy vs sync
 
-La différence est cruciale pour la sécurité de vos données :
+- **`rclone copy`** : transfère les fichiers manquants ou modifiés. Si un fichier a disparu de la source, **il reste** en destination.
+- **`rclone sync`** : miroir strict. Tout ce qui est en destination mais plus en source **est supprimé**. Toujours tester avec `--dry-run`.
 
-- **`rclone copy`** : compare la date et la taille. Il transfère les fichiers manquants ou modifiés. Si un fichier a été supprimé de la source, **il reste présent sur la destination**.
-- **`rclone sync`** : rend la destination strictement identique à la source. Tout fichier présent dans la destination mais absent de la source **est immédiatement supprimé**.
+Comme avec `rsync`, rclone copie en général le **contenu** du dossier source, pas le nom du dossier enveloppant (trailing `/` mental).
 
 ## Drapeaux utiles
 
-- `-P, --progress` : affiche la vitesse, l'estimation de temps restant et le volume transféré en temps réel.
-- `--dry-run` : effectue un test à blanc sans écrire ni supprimer de fichier.
-- `--transfers=N` : définit le nombre de transferts de fichiers en parallèle (par défaut 4).
+| Flag | Rôle |
+| --- | --- |
+| `-P`, `--progress` | Vitesse, ETA, volume en direct |
+| `--dry-run` | Simulation : rien n'est écrit ni effacé |
+| `--transfers=N` | Transferts parallèles (défaut souvent 4) |
+| `-v` / `-vv` | Logs plus détaillés |
+| `--max-depth 1` | Limite la profondeur de `ls` / `lsl` |
+| `-R` | Récursion pour `lsd`, `lsf`, `lsjson` |
 
-## Exemples de code
-
-### 1. Lister le contenu d'un seau S3
-
-```bash
-rclone lsf mon-s3:mon-bucket/sauvegardes/
-```
-
-### 2. Copier un dossier local vers le cloud sans risque de suppression
+## Exemples
 
 ```bash
+# Remotes connus
+rclone listremotes --long
+
+# Contenu d'un bucket
+rclone lsd mon-s3:
+rclone ls mon-s3:mon-bucket/sauvegardes/ --max-depth 1
+
+# Copie locale → cloud (sans supprimer à distance)
 rclone copy ./documents/ mon-s3:mon-bucket/documents/ -P
-```
 
-### 3. Synchroniser en miroir avec simulation préalable
-
-```bash
-# 1. Simuler l'opération pour contrôler les suppressions potentielles
+# Sync en miroir : d'abord simuler
 rclone sync ./site/ mon-s3:mon-bucket/site/ --dry-run
-
-# 2. Exécuter la synchronisation avec suivi de l'avancement
 rclone sync ./site/ mon-s3:mon-bucket/site/ -P
+
+# Vérifier après coup
+rclone check ./site/ mon-s3:mon-bucket/site/
 ```
 
 ## À retenir
 
-`rclone` uniformise l'accès aux stockages cloud avec une syntaxe simple de type `remote:chemin`. Privilégiez `rclone copy` pour des ajouts sécurisés et réservez `rclone sync` aux miroirs stricts en prenant soin de tester avec `--dry-run`.
+- `rclone listremotes` : quels stockages sont configurés.
+- Lister : `ls` / `lsl` (fichiers, récursif), `lsd` (dossiers), `lsf` / `lsjson` (scripts).
+- Syntaxe `remote:chemin` ; le disque local s'écrit en chemin classique.
+- `copy` ajoute sans supprimer ; `sync` fait un miroir — toujours `--dry-run` avant un sync.
+- `-P` pour suivre le transfert ; `about` / `size` pour l'espace.
+
+## Sources
+
+- [rclone listremotes](https://rclone.org/commands/rclone_listremotes/)
+- [rclone ls](https://rclone.org/commands/rclone_ls/) / [lsd](https://rclone.org/commands/rclone_lsd/) / [lsjson](https://rclone.org/commands/rclone_lsjson/)
+- [rclone copy](https://rclone.org/commands/rclone_copy/) / [sync](https://rclone.org/commands/rclone_sync/)
+- [Index des commandes](https://rclone.org/commands/)
 
