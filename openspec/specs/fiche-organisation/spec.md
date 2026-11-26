@@ -27,8 +27,8 @@ Une fiche déposée dans un sous-dossier de `src/content/fiches/`, à n'importe 
 Le dossier d'une fiche SHALL NOT apparaître dans une adresse, dans un lien, dans la recherche ou dans les pages du site. Il SHALL NOT changer la technologie, la difficulté, le tri ni la publication de la fiche.
 
 #### Scenario: Technologie indépendante du dossier
-- **WHEN** une fiche rangée dans `git/` nomme la technologie `devtools` dans son frontmatter
-- **THEN** elle apparaît dans la liste de `devtools` et pas dans celle de `git`
+- **WHEN** une fiche rangée dans `git/` nomme la technologie `securite` dans son frontmatter
+- **THEN** elle apparaît dans la liste de `securite` et pas dans celle de `git`
 
 #### Scenario: Brouillon dans un sous-dossier
 - **WHEN** une fiche d'un sous-dossier est marquée `draft`

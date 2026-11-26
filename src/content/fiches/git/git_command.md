@@ -10,7 +10,7 @@ tags:
   - branche
   - terminal
 publishedAt: 2026-11-13
-updatedAt: 2026-11-23
+updatedAt: 2026-11-26
 draft: false
 quiz:
   - question: "Où se trouve un fichier après git add, avant le commit ?"
@@ -159,10 +159,50 @@ Git refuse le `switch` s'il devrait écraser des modifications non commitées. O
 
 Pour démarrer depuis zéro : `git clone <url>` crée le dossier local et enregistre le distant sous le nom `origin`.
 
+### Gérer les remotes
+
+Un *remote* est un nom local (souvent `origin`) qui pointe vers l'URL d'un dépôt distant. On peut en avoir plusieurs : le clone, un fork, un miroir, etc.
+
+```bash
+git remote                 # noms seulement
+git remote -v              # noms + URL fetch et push
+git remote get-url origin  # URL de fetch d'origin (une seule ligne, pratique en script)
+git remote show origin     # détail : branches suivies, HEAD distant, etc.
+```
+
+`get-url` lit l'URL telle que Git la résout (y compris les alias `url.*.insteadOf` de la config). Avec `--push`, on obtient l'URL de push ; avec `--all`, toutes les URL du remote.
+
+Changer l'URL d'`origin` (migration HTTPS ↔ SSH, changement d'hôte, dépôt renommé) :
+
+```bash
+git remote set-url origin git@github.com:OWNER/REPO.git
+git remote -v              # vérifier
+```
+
+Ajouter un deuxième remote sans toucher à `origin` — cas courant : `origin` = votre fork, `upstream` = le dépôt d'origine :
+
+```bash
+git remote add upstream https://github.com/OWNER/REPO.git
+git fetch upstream
+git remote -v
+```
+
+Ensuite on récupère depuis `upstream` (`git fetch upstream`, `git merge upstream/main`) et on pousse vers `origin`. La doc Git le rappelle : si fetch et push doivent viser des endroits différents, mieux vaut deux remotes distincts plutôt qu'une seule URL de push différente.
+
+Renommer ou retirer un remote :
+
+```bash
+git remote rename old-name new-name
+git remote remove staging   # alias : git remote rm staging
+```
+
+`remove` / `rm` efface le remote et ses branches de suivi locales (`staging/…`). Le dépôt distant lui-même n'est pas touché.
+
+### Fetch, pull, push
+
 `fetch` télécharge les commits du dépôt distant sans toucher aux fichiers ouverts. `pull` fait ce téléchargement, puis fusionne dans la branche courante. `push` envoie les commits locaux.
 
 ```bash
-git remote -v            # URL des distants (souvent origin)
 git fetch origin
 git pull
 git pull --rebase        # rejoue vos commits locaux *au-dessus* du distant (historique plus linéaire)
@@ -221,6 +261,12 @@ git ls-files -z '*__pycache__*' | xargs -0 -r git rm -r --cached
 - `log` / `show` / `blame` pour lire l'historique et l'origine d'une ligne.
 - `add` prépare, `commit` fige. Un message de commit explique le pourquoi.
 - `switch -c` isole un travail. `branch` / `-r` / `-a` listent locales et distantes ; `fetch` puis `switch nom` récupère une branche distante. `-d` / `push --delete` nettoient une branche finie.
-- `remote -v`, `fetch`, `pull` (parfois `--rebase`), `push` : lien avec le distant.
+- `remote -v` / `get-url` / `set-url` / `add` / `rename` / `remove` : lister, lire, changer ou ajouter des distants. `fetch`, `pull` (parfois `--rebase`), `push` : échanger les commits.
 - `stash` met de côté ; `clean -fdn` puis `-fd` pour les fichiers non suivis. `restore` / `reset --hard` peuvent effacer du travail non commité. `revert` défait un commit publié. `cherry-pick` reprend un commit isolé.
 - `git rm --cached` retire le suivi et laisse le fichier sur le disque. `git ls-files` sert à viser plusieurs chemins déjà suivis.
+
+## Sources
+
+- [git-remote — documentation officielle Git](https://git-scm.com/docs/git-remote) : `add`, `get-url`, `set-url`, `rename`, `remove`, `show`
+- [Managing remote repositories — GitHub Docs](https://docs.github.com/en/get-started/git-basics/managing-remote-repositories) : ajouter / changer / renommer / supprimer un remote
+- [Update Git remote URLs — GitLab Docs](https://docs.gitlab.com/tutorials/update_git_remote_url/) : `set-url` côté GitLab

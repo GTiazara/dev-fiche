@@ -9,11 +9,11 @@ export const technologies = [
   { slug: 'android', label: 'Android' },
   { slug: 'hpc', label: 'HPC', icon: '/images/technologies/hpc.svg' },
   { slug: 'git', label: 'Git', icon: '/images/technologies/git.svg' },
-  { slug: 'devtools', label: 'DevTools', icon: '/images/technologies/devtools.svg' },
   { slug: 'ml', label: 'ML', icon: '/images/technologies/ml.svg' },
   { slug: 'deeplearning', label: 'Deep Learning', icon: '/images/technologies/deeplearning.svg' },
   { slug: 'gpu', label: 'GPU', icon: '/images/technologies/gpu.svg' },
   { slug: 'backend', label: 'Backend', icon: '/images/technologies/backend.svg' },
+  { slug: 'bd', label: 'BD', icon: '/images/technologies/bd.svg' },
   { slug: 'ia', label: 'IA', icon: '/images/technologies/ia.svg' },
   { slug: 'ia_agent', label: 'IA Agent', icon: '/images/technologies/ia-agent.svg' },
   {

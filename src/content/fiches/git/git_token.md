@@ -1,7 +1,7 @@
 ---
 title: "GitHub Token et gh : authentification et gestion des permissions"
 description: "Créer et utiliser un token GitHub avec GitHub CLI, comprendre les droits de lecture et d'écriture, et sécuriser l'accès d'un agent IA autonome."
-technology: devtools
+technology: git
 difficulty: intermediaire
 tags:
   - github
@@ -13,7 +13,7 @@ tags:
   - securite
   - agent-ia
 publishedAt: 2026-10-27
-updatedAt: 2026-10-27
+updatedAt: 2026-11-26
 draft: false
 quiz:
   - question: "Quelle variable d'environnement permet à gh d'utiliser un token sur github.com ?"
