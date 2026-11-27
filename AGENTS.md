@@ -1,5 +1,6 @@
 ## Fiche: 
-Ne pas rajouter quiz si pas demander 
+- utilisation de source fiable sur internet et de vraie documentaiton 
+- Ne pas rajouter quiz si pas demander 
 
 ## Contexte de DevFiches
 
